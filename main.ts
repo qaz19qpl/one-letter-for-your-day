@@ -1,4 +1,4 @@
-import { chmodSync, mkdirSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 // One Letter for Your Day — exactly one letter, A to Z, standing for the
 // word that describes the day. Z stands for "zero sleep": a whole night
@@ -12,3 +12,9 @@ if (!/^[A-Z]$/.test(letter)) {
 mkdirSync("/output", { recursive: true });
 writeFileSync("/output/entry.txt", letter, "utf8");
 chmodSync("/output/entry.txt", 0o644);
+
+// Verify the entry on disk: exactly one letter, A to Z, nothing else.
+const written = readFileSync("/output/entry.txt", "utf8");
+if (!/^[A-Z]$/.test(written)) {
+  throw new Error(`invalid entry on disk: ${JSON.stringify(written)}`);
+}
